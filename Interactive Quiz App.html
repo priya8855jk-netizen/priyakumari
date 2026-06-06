@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<!-- saved from url=(0052)file:///C:/Users/computer%20galaxy/Desktop/quiz.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive Quiz App</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #4facfe, #00f2fe);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .quiz-container {
+      background: white;
+      width: 90%;
+      max-width: 500px;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      text-align: center;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    #question {
+      font-size: 20px;
+      margin-bottom: 20px;
+      color: #222;
+    }
+
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 8px;
+      background: #4facfe;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .btn:hover {
+      background: #007bff;
+    }
+
+    .correct {
+      background: #28a745 !important;
+    }
+
+    .wrong {
+      background: #dc3545 !important;
+    }
+
+    #next-btn {
+      margin-top: 20px;
+      display: none;
+      background: #ff9800;
+    }
+
+    #score {
+      font-size: 22px;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+
+<div class="quiz-container">
+  <h1>Interactive Quiz App</h1>
+  <div id="quiz">
+    <h2 id="question">1. What does HTML stand for?</h2>
+    <div id="answer-buttons"><button class="btn" data-correct="true">Hyper Text Markup Language</button><button class="btn">High Text Machine Language</button><button class="btn">Hyper Tool Multi Language</button><button class="btn">Home Tool Markup Language</button></div>
+    <button id="next-btn" class="btn" style="display: none;">Next</button>
+  </div>
+</div>
+
+<script>
+  const questions = [
+    {
+      question: "What does HTML stand for?",
+      answers: [
+        { text: "Hyper Text Markup Language", correct: true },
+        { text: "High Text Machine Language", correct: false },
+        { text: "Hyper Tool Multi Language", correct: false },
+        { text: "Home Tool Markup Language", correct: false }
+      ]
+    },
+    {
+      question: "Which language is used for styling web pages?",
+      answers: [
+        { text: "HTML", correct: false },
+        { text: "JQuery", correct: false },
+        { text: "CSS", correct: true },
+        { text: "XML", correct: false }
+      ]
+    },
+    {
+      question: "Which is used for web page interactivity?",
+      answers: [
+        { text: "CSS", correct: false },
+        { text: "JavaScript", correct: true },
+        { text: "HTML", correct: false },
+        { text: "Python", correct: false }
+      ]
+    },
+    {
+      question: "Which company developed JavaScript?",
+      answers: [
+        { text: "Microsoft", correct: false },
+        { text: "Netscape", correct: true },
+        { text: "Google", correct: false },
+        { text: "Apple", correct: false }
+      ]
+    }
+  ];
+
+  const questionElement = document.getElementById("question");
+  const answerButtons = document.getElementById("answer-buttons");
+  const nextButton = document.getElementById("next-btn");
+
+  let currentQuestionIndex = 0;
+  let score = 0;
+
+  function startQuiz() {
+    currentQuestionIndex = 0;
+    score = 0;
+    nextButton.innerHTML = "Next";
+    showQuestion();
+  }
+
+  function showQuestion() {
+    resetState();
+    let currentQuestion = questions[currentQuestionIndex];
+    let questionNo = currentQuestionIndex + 1;
+    questionElement.innerHTML = questionNo + ". " + currentQuestion.question;
+
+    currentQuestion.answers.forEach(answer => {
+      const button = document.createElement("button");
+      button.innerHTML = answer.text;
+      button.classList.add("btn");
+      answerButtons.appendChild(button);
+
+      if (answer.correct) {
+        button.dataset.correct = answer.correct;
+      }
+
+      button.addEventListener("click", selectAnswer);
+    });
+  }
+
+  function resetState() {
+    nextButton.style.display = "none";
+    while (answerButtons.firstChild) {
+      answerButtons.removeChild(answerButtons.firstChild);
+    }
+  }
+
+  function selectAnswer(e) {
+    const selectedBtn = e.target;
+    const isCorrect = selectedBtn.dataset.correct === "true";
+
+    if (isCorrect) {
+      selectedBtn.classList.add("correct");
+      score++;
+    } else {
+      selectedBtn.classList.add("wrong");
+    }
+
+    Array.from(answerButtons.children).forEach(button => {
+      if (button.dataset.correct === "true") {
+        button.classList.add("correct");
+      }
+      button.disabled = true;
+    });
+
+    nextButton.style.display = "block";
+  }
+
+  function showScore() {
+    resetState();
+    questionElement.innerHTML = `You scored ${score} out of ${questions.length}!`;
+    nextButton.innerHTML = "Play Again";
+    nextButton.style.display = "block";
+  }
+
+  function handleNextButton() {
+    currentQuestionIndex++;
+    if (currentQuestionIndex < questions.length) {
+      showQuestion();
+    } else {
+      showScore();
+    }
+  }
+
+  nextButton.addEventListener("click", () => {
+    if (currentQuestionIndex < questions.length) {
+      handleNextButton();
+    } else {
+      startQuiz();
+    }
+  });
+
+  startQuiz();
+</script>
+
+
+</body></html>
